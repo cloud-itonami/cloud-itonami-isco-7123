@@ -1,0 +1,32 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:physics` runs it.
+;;
+;; README "Robotics premise": a job-site scheduling/logistics coordination
+;; robot for plasterers (ISCO 7123) schedules the crew, logs materials usage
+;; and progress, and coordinates plastering-materials supply orders; it never
+;; plasters. Its physical work is bringing bagged plaster up to the working
+;; floor and staging the water supply for the mixing station.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isco-7123"
+ :cases
+ [{:id :plaster-bag-ramp
+   :kind :transport
+   :procedure "logistics robot carries a load of 25 kg plaster bags 25 m up a 5 degree site ramp to the floor being plastered"
+   :params {:mass-kg 110.0 :distance-m 25.0 :v-max-mps 1.0 :a-max-mps2 0.5
+            :brake-decel-mps2 0.8 :drive-force-n 500.0 :crr 0.03 :slope-deg 5.0
+            :cog-height-m 0.40 :support-half-length-m 0.35 :payload-cog-height-m 0.60}
+   :sweep {:param :payload-kg :values [100.0 200.0 300.0 400.0 500.0]}
+   :quantity :cycle-time-s
+   :limit {:max 45.0 :basis "estimate: one ramp leg within the time the mixing station takes to use a load of bags, so the crew is not kept waiting"}
+   :boundary {:lo 10.0 :hi 600.0}}
+  {:id :mixer-water-hose
+   :kind :pipe-flow
+   :procedure "robot stages a 30 m, 19 mm site hose from the water point to the plaster mixing station one floor (6 m) up; the mixer's water draw is swept"
+   :params {:diameter-m 0.019 :length-m 30.0 :roughness-m 1.5e-6 :elevation-m 6.0}
+   :sweep {:param :q-m3s :values [0.0001 0.0002 0.0004 0.0006 0.0008]}
+   :quantity :pressure-drop-pa
+   :limit {:max 250000.0 :basis "estimate: pressure available at a temporary site water point (~3 bar) less a residual the mixer's inlet needs"}
+   :boundary {:lo 0.00005 :hi 0.0015}}]}
