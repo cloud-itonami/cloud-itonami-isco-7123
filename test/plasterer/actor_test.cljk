@@ -1,5 +1,5 @@
 (ns plasterer.actor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [plasterer.actor :as actor]
             [plasterer.store :as store]))
 

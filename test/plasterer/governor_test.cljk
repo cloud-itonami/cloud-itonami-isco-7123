@@ -1,5 +1,5 @@
 (ns plasterer.governor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [plasterer.store :as store]
             [plasterer.advisor :as advisor]
             [plasterer.governor :as governor]))
